@@ -29,3 +29,11 @@ If there was no problem the "first" and "modified" should be different for both 
 var cssFile = '<%= asset_url("application.css") %>';
 ```
 
+
+## Fixed
+
+By adding this to `application.js.erb`
+
+```
+//= depend_on_asset "application.css.erb"
+```

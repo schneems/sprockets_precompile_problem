@@ -5,6 +5,11 @@ require File.expand_path('../config/application', __FILE__)
 
 SprocketsNoDigestUpdate::Application.load_tasks
 
+def sort_files(files)
+  stat_hash = Hash.new {|hash, key| hash[key] = File.stat(key)}
+  files.map.sort_by {|f| stat_hash[f].mtime }
+end
+
 
 task :precompile_problem do
   if Dir.exist?("public/assets")
@@ -29,8 +34,11 @@ task :precompile_problem do
   puts "== Running assets:precompile RAILS_ENV=production"
   puts `bundle exec rake assets:precompile RAILS_ENV=production`
 
-  second_css = Dir.glob("public/assets/*.css").last
-  second_js = Dir.glob("public/assets/*.js").last
+  stylesheets = sort_files(Dir.glob("public/assets/*.css"))
+  js          = sort_files(Dir.glob("public/assets/*.js"))
+
+  second_css = stylesheets.last
+  second_js  = js.last
   puts "== Contents of JS: (should be different)"
   puts ""
   puts "============= RESULTS ================="
